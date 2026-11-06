@@ -1,0 +1,35 @@
+SOLUCIÓN 
+
+Escenario: el sistema debe calcular un descuento del 10% sobre un producto de $1,000, pero muestra $1,000 en lugar de $900.
+
+1. ¿Qué prueba automatizada utilizarías para detectar el error?
+
+Una prueba unitaria sobre la función que calcula el descuento. La prueba envía un precio de 1000 con 10% de descuento y verifica que el resultado sea 900. Por ejemplo:
+
+    assert calcular_descuento(1000, 10) == 900
+
+Como el sistema devuelve 1000, la prueba detecta la diferencia entre el valor esperado (900) y el obtenido (1000). También se pueden agregar casos de borde: descuento 0%, descuento 100% y precio 0.
+
+2. ¿Qué debería suceder cuando la prueba falla en CI?
+
+El pipeline se marca como fallido (en rojo) y se detiene: no se integra el cambio a la rama principal ni se despliega. El sistema de CI notifica al equipo y muestra el reporte con la prueba que falló, el valor esperado (900) y el obtenido (1000).
+
+3. ¿Qué debe hacer el programador para corregirlo?
+
+- Revisar el reporte de CI y reproducir el error en su equipo.
+- Localizar el defecto en la función (por ejemplo, el descuento se calcula pero no se resta del precio, o no se aplica el porcentaje).
+- Corregir el código para que haga: precio - (precio * porcentaje / 100).
+- Hacer un nuevo commit con un mensaje claro (por ejemplo "Corrige cálculo de descuento") y enviarlo al repositorio con push.
+
+4. ¿Cómo comprobarías que la corrección funciona?
+
+- Ejecutando la prueba de nuevo en local y después en CI: debe pasar (resultado 900).
+- Verificando que el pipeline completo quede en verde (compilación y todas las pruebas).
+- Ejecutando las demás pruebas existentes para confirmar que la corrección no rompió otras funciones (pruebas de regresión).
+
+5. ¿Qué regla implementarías para evitar que vuelva a ocurrir?
+
+- Proteger la rama principal: no se permite fusionar (merge) ningún cambio si el pipeline de CI no pasa todas las pruebas.
+- Exigir que todo cambio al cálculo de precios y descuentos incluya su prueba unitaria.
+- Mantener la prueba de este caso (1000 con 10% = 900) como prueba de regresión permanente.
+- Revisión de código (pull request) por otro integrante del equipo antes de integrar.
